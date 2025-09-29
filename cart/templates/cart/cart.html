@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5">
+    {% if cart_items %}
+    <div class="row">
+        <!-- Cart Items Section -->
+        <div class="col-lg-8">
+            <p class="text-success">Your order qualifies for free shipping!</p>
+            <div class="progress mb-4">
+                <div class="progress-bar" style="width: 100%;  background-color: #1C49C2;"></div>
+            </div>
+
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Remove</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Sub Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'cart:remove_from_cart' item.id %}" class="btn btn-sm fw-bold">X</a>
+                        </td>
+                        <td class="d-flex align-items-center">
+                            <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" width="60"
+                                class="me-2">
+                            <span>{{ item.product.name }}</span>
+                        </td>
+                        <td>₹ {{ item.product.price }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <a href="{% url 'cart:update_cart' item.id 'decrease' %}"
+                                    class="btn btn-outline-secondary btn-sm">-</a>
+                                <span class="mx-2">{{ item.quantity }}</span>
+                                <a href="{% url 'cart:update_cart' item.id 'increase' %}"
+                                    class="btn btn-outline-secondary btn-sm">+</a>
+
+                            </div>
+                        </td>
+                        <td>₹ {{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Coupon Section -->
+            <div class="input-group mb-4">
+                <input type="text" class="form-control" placeholder="Coupon code">
+                <button class="btn btn-primary">Apply coupon</button>
+            </div>
+
+            <!-- Free Products Section -->
+            <div class="row text-center">
+                <div class="col-md-4 mb-3">
+                    <div class="p-3  text-white rounded" style="background-color: #87e987;">Free products dog food combo
+                        5 kg, turkey</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="p-3  text-white rounded" style="background-color: #87e987;">Free products dog food 2 kg
+                        turkey</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="p-3 text-white rounded" style="background-color: #87e987;">Free products dog food 2 kg
+                        chicken</div>
+                </div>
+            </div>
+
+
+
+            <!-- Bottom Features -->
+            <div class="row text-center mt-5">
+                <div class="col-md-4">
+                    <i class="bi bi-telephone fs-3"></i>
+                    <p>Have a question?<br>Our experts are here to call: <a href="#">call us</a></p>
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-lock fs-3"></i>
+                    <p>Secure shopping<br>All transactions are protected by SSL</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-shield-lock fs-3"></i>
+                    <p>Privacy protection<br>Your privacy is always our top priority.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Totals Section -->
+        <div class="col-lg-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Cart Totals</h4>
+                    <div class="d-flex justify-content-between">
+                        <span>Sub total</span>
+                        <span id="cart-subtotal">₹ {{ subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Shipping</span>
+                        <span id="cart-shipping">Flat rate : ₹99.00</span>
+                    </div>
+                    <small class="text-muted">Shipping to Madhya Pradesh. <a href="#">Change address</a></small>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Total</span>
+                        <span id="cart-total">₹ {{ total }}</span>
+                    </div>
+                   <a href="{% url 'cart:checkout' %}" class="btn btn-primary w-100 mt-3">Proceed to Checkout</a>
+
+                </div>
+
+                <!-- Payment methods -->
+                <div class="m-3">
+                    <h6>Payment methods</h6>
+                    <img src="{% static 'images/gpay.png' %}" alt="GPay" width="50">
+                    <img src="{% static 'images/phonepe.webp' %}" alt="PhonePe" width="50">
+                    <img src="{% static 'images/mastercard.webp' %}" alt="Mastercard" width="50">
+                    <img src="{% static 'images/paypal.png' %}" alt="PayPal" width="50">
+                    <img src="{% static 'images/visa.webp' %}" alt="Visa" width="50">
+                </div>
+
+                <!-- Delivery info -->
+                <div class="m-3 small">
+                    <p><strong>Delivery information:</strong><br>
+                        Although we don’t think you’ll ever want one, we’ll gladly provide a refund if it’s requested
+                        within 14 days of purchase.</p>
+                    <p><strong>14 Days Money Back Guarantee:</strong><br>
+                        Although we don’t think you’ll ever want one, we’ll gladly provide a refund if it’s requested
+                        within 14 days of purchase.</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        {% else %}
+        <div class="text-center py-5">
+            <h3>Your cart is empty</h3>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+    <!-- AJAX Script -->
+    <script>
+        function refreshCartSummary() {
+            fetch("{% url 'cart:cart_summary' %}")
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("cart-subtotal").innerText = "₹ " + data.subtotal;
+                    document.getElementById("cart-total").innerText = "₹ " + data.total;
+                    document.getElementById("cart-shipping").innerText = data.shipping > 0 ? "Flat rate : ₹" + data.shipping : "Free";
+                });
+        }
+
+        document.querySelectorAll(".update-qty").forEach(button => {
+            button.addEventListener("click", function () {
+                const itemId = this.dataset.id;
+                const action = this.dataset.action;
+
+                fetch(`/cart/update/${itemId}/${action}/`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.item_removed) {
+                            document.getElementById(`row-${itemId}`).remove();
+                        } else {
+                            document.getElementById(`qty-${itemId}`).innerText = data.quantity;
+                            document.getElementById(`subtotal-${itemId}`).innerText = data.subtotal;
+                        }
+                        refreshCartSummary();
+                    });
+            });
+        });
+
+        document.querySelectorAll(".remove-item").forEach(button => {
+            button.addEventListener("click", function () {
+                const itemId = this.dataset.id;
+                fetch(`/cart/remove/${itemId}/`)
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById(`row-${itemId}`).remove();
+                        refreshCartSummary();
+                        if (data.summary.subtotal === 0) {
+                            location.reload(); // fallback to empty cart view
+                        }
+                    });
+            });
+        });
+    </script>
+
+    {% endblock %}

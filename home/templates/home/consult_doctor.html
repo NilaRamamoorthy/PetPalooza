@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  .steps-bar {
+    display: flex;
+    justify-content: space-around;
+    background: #90ee90;
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+    font-weight: 500;
+  }
+  .steps-bar div {
+    text-align: center;
+    flex: 1;
+  }
+  .steps-bar i {
+    display: block;
+    font-size: 22px;
+    margin-bottom: 5px;
+  }
+  .service-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    background: #fff;
+  }
+  .price {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .old-price {
+    text-decoration: line-through;
+    color: #777;
+    margin-left: 5px;
+    font-size: 14px;
+  }
+  .discount {
+    color: green;
+    font-weight: 600;
+    font-size: 14px;
+    margin-left: 5px;
+  }
+  .btn-primary {
+    border-radius: 20px;
+    padding: 8px 20px;
+  }
+  .btn-outline-primary {
+    border-radius: 12px;
+  }
+</style>
+
+<!-- Breadcrumb Section -->
+<nav aria-label="breadcrumb" class="py-2 my-4">
+  <div class="container">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a class="text-decoration-none text-dark" href="{% url 'home' %}">Home</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a class="text-decoration-none text-dark" href="{% url 'consult_a_vet' %}">Consult Vet</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Consult Doctor
+      </li>
+    </ol>
+  </div>
+</nav>
+
+
+<div class="container my-5">
+  <div class="row">
+    <!-- Left Side -->
+    <div class="col-md-7">
+      <!-- Steps Bar -->
+      <div class="steps-bar mb-3">
+        <div>
+          <i class="bi bi-wallet2"></i>
+          Pay & book the<br> consultant
+        </div>
+        <div>
+          <i class="bi bi-camera-video"></i>
+          Choose video or<br> Teleconsultation
+        </div>
+        <div>
+          <i class="bi bi-file-earmark-text"></i>
+          Receive prescription<br> after the call
+        </div>
+      </div>
+      <!-- Image -->
+      <img src="{% static 'images/consultavet-sheba.png' %}" alt="Vet Consultation" class="img-fluid rounded" style="margin-top: -16px;">
+    </div>
+
+    <!-- Right Side -->
+    <div class="col-md-5">
+      <div class="service-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold">Services</h5>
+          <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> 5</span>
+        </div>
+        <p class="text-muted">Instant Consultation (10 AM to 7 PM)</p>
+
+        <button class="btn btn-primary w-100 mb-3 fw-bold">Book consultation</button>
+
+        <div class="d-flex align-items-center mb-3">
+          <span class="price">₹299</span>
+          <span class="old-price">₹499</span>
+          <span class="discount">40% OFF</span>
+        </div>
+
+        <div class="mb-3 d-flex justify-content-between align-items-center border rounded p-2">
+          <span><i class="bi bi-bank"></i> Bank offers and coupons</span>
+          <a href="#" class="text-decoration-none">Check offers ></a>
+        </div>
+
+        <p class="text-muted mb-1">
+          <i class="bi bi-x-circle"></i> Currently, cash on delivery is not available on this product.
+        </p>
+        <p class="text-muted">
+          <i class="bi bi-truck"></i> Free delivery on orders above ₹599
+        </p>
+
+        <button class="btn btn-primary w-100 fw-bold">Add to cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+<hr style="border: 1px solid black;">
+
+
+<!--  -->
+<div class="container my-5">
+  <h2 class="mb-4">Customer Reviews</h2>
+  <div class="row g-4">
+    {% for review in reviews %}
+    <div class="col-md-4">
+      <div class="card p-3 bg-light h-100">
+        <div class="d-flex align-items-center mb-2">
+          <i class="bi bi-person-circle fs-3 me-2"></i>
+          <div>
+            <h5 class="mb-0">{{ review.name }}</h5>
+            <small>{{ review.created_at|date:"d/m/Y" }}</small>
+          </div>
+        </div>
+
+        <!-- Star Rating -->
+        <div class="mb-2">
+          {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}
+              <i class="bi bi-star-fill text-warning"></i>
+            {% else %}
+              <i class="bi bi-star text-warning"></i>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <p class="mb-2">{{ review.comment }}</p>
+      </div>
+    </div>
+    {% empty %}
+    <p>No reviews yet. Be the first to write one!</p>
+    {% endfor %}
+  </div>
+
+  <!-- Button to trigger modal -->
+  <div class="text-center mt-5">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+      Add Review
+    </button>
+  </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'consult_doctor' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Write a Review</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          {{ form.as_p }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

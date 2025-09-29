@@ -1,0 +1,196 @@
+<!-- Top Bar -->
+<div class="bg-light py-2">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-telephone"></i> {{ site_settings.phone_number }}
+            &nbsp;&nbsp;
+            <i class="bi bi-envelope"></i> {{ site_settings.email }}
+        </div>
+    </div>
+</div>
+
+<!-- Main Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1C49C2;">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+
+        <!-- Left: Logo + Search -->
+        <div class="d-flex align-items-center gap-4">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                {% if site_settings.logo %}
+                    <img src="{{ site_settings.logo.url }}" alt="Logo" style="height: 70px; width: 150px;">
+                {% endif %}
+            </a>
+
+            <!-- Search Bar -->
+            <form class="d-none d-md-block" method="get" action="{% url 'search' %}">
+                <input class="form-control rounded-pill" type="search" placeholder="Search for products" name="q" style="width: 300px;">
+            </form>
+        </div>
+
+        <!-- Right: Nav Links -->
+        <div class="d-flex align-items-center">
+            <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex flex-row gap-3 align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}text-warning fw-bold{% endif %}" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about/' %}text-warning fw-bold{% endif %}" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/contact/' %}text-warning fw-bold{% endif %}" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/login/' %}text-warning fw-bold{% endif %}" href="{% url 'login' %}">
+                            <i class="bi bi-person"></i> Log In
+                        </a>
+                    </li>
+                    <li class="nav-item position-relative">
+                        <a class="nav-link" href="{% url 'cart' %}">
+                            <i class="bi bi-cart"></i> Cart
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                                0
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+
+<!-- Category Navigation Bar -->
+<div class="py-2" style="background-color: #1C49C2;">
+    <div class="container d-flex justify-content-center align-items-center gap-5 text-white fw-bold flex-wrap">
+
+        {% for main_type in main_types %}
+            {% if main_type.slug == "pet-services" %}
+                <!-- Pet Services: Special Link -->
+                <div>
+                    <a class="text-decoration-none {% if request.resolver_match.url_name == 'pet_services' %}text-warning{% else %}text-white{% endif %}"
+                       href="{% url 'pet_services' %}">
+                        {{ main_type.name }}
+                    </a>
+                </div>
+            {% elif main_type.categories.exists %}
+                <!-- Dropdown with link + toggle -->
+                <div class="dropdown d-flex align-items-center">
+                    <!-- MainType Link (e.g. Dog, Cat) -->
+                    <a class="text-decoration-none me-1 {% if request.resolver_match.kwargs.main_type_slug == main_type.slug %}text-warning{% else %}text-white{% endif %}"
+                       href="{% url 'main_type_products' main_type.slug %}">
+                        {{ main_type.name }}
+                    </a>
+
+                    <!-- Dropdown Toggle (arrow) -->
+                    <a class="dropdown-toggle text-white text-decoration-none"
+                       href="#"
+                       id="dropdownMenu{{ main_type.id }}"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                    </a>
+
+                    <!-- Dropdown Menu -->
+                    <ul class="dropdown-menu p-3 mt-3" aria-labelledby="dropdownMenu{{ main_type.id }}" style="width: 95vw; margin-left: -5px;">
+                        <div class="d-flex flex-wrap gap-4">
+                            {% for category in main_type.categories.all %}
+                                <div>
+                                    <h6 class="fw-bold">{{ category.name }}</h6>
+                                    <ul class="list-unstyled">
+                                        {% for sub in category.subcategories.all %}
+                                            <li>
+                                                <a class="dropdown-item"
+                                                   href="{% url 'subcategory_products' main_type.slug category.slug sub.slug %}">
+                                                    {{ sub.name }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </ul>
+                </div>
+
+            {% else %}
+                <!-- Simple MainType Link (no categories) -->
+                <div>
+                    <a class="text-decoration-none {% if request.resolver_match.kwargs.main_type_slug == main_type.slug %}text-warning{% else %}text-white{% endif %}"
+                       href="{% url 'main_type_products' main_type.slug %}">
+                        {{ main_type.name }}
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Static Links -->
+<!-- Shop by Brand -->
+<div class="dropdown d-inline-block me-3">
+  <a class="dropdown-toggle text-white text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Shop by Brand
+  </a>
+
+  <ul class="dropdown-menu p-3" style="width: 95vw;">
+    {% if brands %}
+      <div class="d-flex flex-wrap gap-3 justify-content-start">
+        {% for brand in brands %}
+          {% if selected_main_type.slug == "pet-services" %}
+            <a href="{% url 'pet_services' %}?brand={{ brand.slug }}" class="text-decoration-none">
+          {% else %}
+            <a href="{% url 'main_type_products' selected_main_type.slug %}?brand={{ brand.slug }}" class="text-decoration-none">
+          {% endif %}
+              <div class="text-center">
+                <img src="{{ brand.image.url }}" alt="{{ brand.name }}" style="max-width: 180px; height: 100px; object-fit: contain;">
+              </div>
+            </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <li><span class="dropdown-item text-muted">No brands available</span></li>
+    {% endif %}
+  </ul>
+</div>
+
+
+<!-- Shop by Breed -->
+<div class="dropdown d-inline-block">
+  <a class="dropdown-toggle text-white text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Shop by Breed
+  </a>
+  <ul class="dropdown-menu">
+    {% for breed in breeds %}
+      <li>
+        {% if selected_main_type.slug == "pet-services" %}
+          <a class="dropdown-item" href="{% url 'pet_services' %}?breed={{ breed.slug }}">
+            {{ breed.name }}
+          </a>
+        {% else %}
+          <a class="dropdown-item" href="{% url 'main_type_products' selected_main_type.slug %}?breed={{ breed.slug }}">
+            {{ breed.name }}
+          </a>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li><span class="dropdown-item text-muted">No breeds available</span></li>
+    {% endfor %}
+  </ul>
+</div>
+
+        <div>
+            <a class="text-decoration-none {% if request.resolver_match.url_name == 'consult_a_vet' %}text-warning{% else %}text-white{% endif %}"
+               href="{% url 'consult_a_vet' %}">
+                Consult a Vet
+            </a>
+        </div>
+
+    </div>
+</div>
+
+

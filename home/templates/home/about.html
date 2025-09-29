@@ -1,0 +1,56 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="about-page my-5">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb text-muted">
+        <a href="{% url 'home' %}" class="text-decoration-none text-dark">Home</a> / About
+    </div>
+
+    <!-- About Image & Mission -->
+    <div class="about-header container" style="position: relative;">
+        <img src="{{ about.image.url }}" alt="About Image" style="width: 100%; height: auto;">
+        <div class="mission-text text-center" style="position: absolute; max-width: 60vw; bottom: 60px; left: 140px; background: rgba(0,0,0,0.6); color: white; padding: 15px; border-radius: 5px;">
+            <h2>Our Mission</h2>
+            <p>{{ about.mission }}</p>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="about-description container text-center" style="background-color: #98FB98; padding: 20px;">
+        <h3>Anything for Pets®</h3>
+        <p>{{ about.description|linebreaks }}</p>
+    </div>
+</div>
+
+
+<div class="container mt-5 mb-5">
+  <!-- Cards Section -->
+  <div class="row text-center">
+    {% for card in cards %}
+      <div class="col-md-4">
+        <div class="highlight-card">
+          <img src="{{ card.image.url }}" alt="{{ card.title }}">
+          <a href="{{ card.link }}" class="btn btn-blue w-100">{{ card.title }}</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Reason Section -->
+  {% if reason %}
+    <div class="green-section container d-flex p-0">
+      <div class="col-md-6 d-flex flex-column px-4 justify-content-center align-items-center">
+        <h5><strong>10 Reasons to Love #LifeAtPetSmart</strong></h5>
+        <p>
+          {{ reason.description }}
+        </p>
+      </div>
+      <div class="col-md-6">
+        <img src="{{ reason.image.url }}" alt="Reason image" class="img-fluid rounded w-100 h-100" >
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

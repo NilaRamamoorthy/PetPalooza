@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+.star-rating {
+  direction: rtl;
+  display: inline-flex;
+  font-size: 1.5rem;
+}
+.star-rating input { display: none; }
+.star-rating label {
+  color: #ccc;
+  cursor: pointer;
+}
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label { color: gold; }
+</style>
+
+<div class="container my-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a class="text-decoration-none text-dark" href="{% url 'home' %}">Home</a></li>
+      <li class="breadcrumb-item"><a class="text-decoration-none text-dark" href="{% url 'shop:main_type_products' product.main_type.slug %}">{{ product.main_type.name }}</a></li>
+      <li class="breadcrumb-item"><a class="text-decoration-none text-dark" href="{% url 'shop:category_products' product.main_type.slug product.category.slug %}">{{ product.category.name }}</a></li>
+      <li class="breadcrumb-item"><a class="text-decoration-none text-dark" href="{% url 'shop:subcategory_products' product.main_type.slug product.category.slug product.subcategory.slug %}">{{ product.subcategory.name }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <!-- Left Side: Product Images -->
+    <div class="col-md-6">
+      <div class="mb-3">
+        <img id="main-product-image" src="{{ product.main_image.url }}" class="img-fluid border rounded w-100" alt="{{ product.name }}">
+      </div>
+      <div class="d-flex flex-wrap gap-2">
+        {% for img in product.images.all %}
+          <img src="{{ img.image.url }}" class="img-thumbnail product-thumb" style="width:100px; height:100px; cursor:pointer;" alt="{{ img.alt_text }}">
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Right Side: Product Info -->
+    <div class="col-md-6">
+      <h3>{{ product.name }}</h3>
+
+      {% if product.brand %}
+        <p><strong>Brand:</strong> {{ product.brand.name }}</p>
+      {% endif %}
+
+      <p>{{ product.description }}</p>
+
+      <p class="fs-5 fw-bold text-primary" id="price-display">
+        ₹{{ product.price }}
+        <small class="text-muted">(Inclusive of all taxes)</small>
+      </p>
+
+      <!-- Ratings -->
+      <div class="mb-2">
+        {% for i in "12345" %}
+          {% if average_rating|floatformat:1 >= forloop.counter %}
+            <i class="bi bi-star-fill text-warning"></i>
+          {% elif average_rating|floatformat:1 >= forloop.counter|add:"-0.5" %}
+            <i class="bi bi-star-half text-warning"></i>
+          {% else %}
+            <i class="bi bi-star text-warning"></i>
+          {% endif %}
+        {% endfor %}
+        <span class="text-muted small">({{ review_count }})</span>
+      </div>
+
+      <!-- Size Selection -->
+      <div class="mb-3">
+        <label class="fw-bold">Available Size:</label>
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-outline-secondary btn-sm size-btn active" data-size="1">1kg</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm size-btn" data-size="2">2kg</button>
+        </div>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="mb-3 d-flex align-items-center">
+        <label class="fw-bold me-2">Quantity:</label>
+        <div class="input-group" style="width: 120px;">
+          <button type="button" class="btn btn-outline-secondary" id="qty-minus">-</button>
+          <input type="text" id="quantity-input" value="1" class="form-control text-center" readonly>
+          <button type="button" class="btn btn-outline-secondary" id="qty-plus">+</button>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="d-flex gap-3">
+        {% if user.is_authenticated %}
+          <button type="button" id="add-to-cart-btn" class="btn btn-primary">Add to Cart</button>
+          <button type="button" id="buy-now-btn" class="btn btn-dark">Buy Now</button>
+        {% else %}
+          <button 
+            type="button" 
+            class="btn btn-primary" 
+            onclick="window.location.href='{% url 'login' %}?next={{ request.path }}';">
+            Add to Cart
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-dark" 
+            onclick="window.location.href='{% url 'login' %}?next={{ request.path }}';">
+            Buy Now
+          </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Review Section -->
+<div class="card p-4 mt-5">
+  <div class="row">
+    
+    <!-- LEFT: Ratings Overview -->
+    <div class="col-md-6 border-end">
+      <h4 class="mb-3">Customer Reviews</h4>
+      
+      <!-- Average Rating -->
+      <div class="d-flex align-items-center mb-2">
+        {% for i in "12345" %}
+          {% if forloop.counter <= avg_rating %}
+            <i class="bi bi-star-fill text-warning fs-4"></i>
+          {% else %}
+            <i class="bi bi-star text-warning fs-4"></i>
+          {% endif %}
+        {% endfor %}
+        <span class="ms-2">{{ avg_rating|floatformat:1 }} / 5</span>
+      </div>
+      <p class="text-muted">{{ review_count }} reviews</p>
+
+      <!-- Breakdown -->
+      {% for item in breakdown_list %}
+      <div class="d-flex align-items-center mb-2">
+        <span style="width:50px;">{{ item.stars }} ★</span>
+        <div class="progress flex-grow-1 mx-2" style="height: 8px; border-radius: 4px;">
+          <div class="progress-bar bg-warning" role="progressbar"
+               style="width: {{ item.percent }}%;" aria-valuenow="{{ item.percent }}"
+               aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <span>{{ item.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- RIGHT: Review Form -->
+    <div class="col-md-6 ps-4">
+      <h5 class="mb-3">Be the first to review “{{ product.name }}”</h5>
+      <p class="small text-muted">Your email address will not be published. Required fields are marked *</p>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- Rating Input -->
+        <label class="form-label">Your Rating *</label><br>
+        <div class="star-rating mb-3">
+          {% for i in "54321" %}
+            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
+            <label for="star{{ i }}">★</label>
+          {% endfor %}
+        </div>
+
+        <!-- Review Text -->
+        <div class="mb-3">
+          <label class="form-label">Your Review *</label>
+          {{ form.review }}
+        </div>
+
+        <!-- Name -->
+        <div class="mb-3">
+          <label class="form-label">Your Name *</label>
+          {{ form.name }}
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label class="form-label">Your Email *</label>
+          {{ form.email }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- Toast Notification -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+  <div id="cartToast" class="toast align-items-center text-bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body">✅ Item added to cart!</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const basePrice = {{ product.price }};
+    const priceElement = document.querySelector("#price-display");
+    const qtyInput = document.querySelector("#quantity-input");
+    const minusBtn = document.querySelector("#qty-minus");
+    const plusBtn = document.querySelector("#qty-plus");
+    const sizeButtons = document.querySelectorAll(".size-btn");
+    const mainImage = document.querySelector("#main-product-image");
+    const thumbs = document.querySelectorAll(".product-thumb");
+
+    let selectedSize = 1;
+    let quantity = 1;
+
+    function updatePrice() {
+        const price = basePrice * selectedSize * quantity;
+        priceElement.textContent = "₹" + price.toLocaleString();
+    }
+
+    // Size selection
+    sizeButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            sizeButtons.forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+            selectedSize = parseInt(this.dataset.size);
+            updatePrice();
+        });
+    });
+
+    // Quantity
+    minusBtn.addEventListener("click", function () {
+        if (quantity > 1) {
+            quantity--;
+            qtyInput.value = quantity;
+            updatePrice();
+        }
+    });
+    plusBtn.addEventListener("click", function () {
+        quantity++;
+        qtyInput.value = quantity;
+        updatePrice();
+    });
+
+    // Thumbnail click → change main image
+    thumbs.forEach(thumb => {
+        thumb.addEventListener("click", function () {
+            mainImage.src = this.src;
+        });
+    });
+
+    // Add to Cart AJAX + Toast
+    const addToCartBtn = document.querySelector("#add-to-cart-btn");
+    const buyNowBtn = document.querySelector("#buy-now-btn");
+
+    function addToCart(redirect=false) {
+        fetch("{% url 'cart:add_to_cart' product.id %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: new URLSearchParams({
+                "quantity": quantity,
+                "size": selectedSize
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (redirect) {
+                window.location.href = "{% url 'cart:cart_detail' %}";
+            } else {
+                const toast = new bootstrap.Toast(document.getElementById("cartToast"));
+                toast.show();
+            }
+        });
+    }
+
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener("click", function () {
+            addToCart(false);
+        });
+    }
+    if (buyNowBtn) {
+        buyNowBtn.addEventListener("click", function () {
+            addToCart(true);
+        });
+    }
+
+    updatePrice();
+});
+</script>
+
+{% endblock %}

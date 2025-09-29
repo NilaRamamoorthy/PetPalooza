@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Checkout Form -->
+        <div class="col-lg-8">
+            <h2 class="mb-4">Checkout</h2>
+
+            <form method="post">
+                {% csrf_token %}
+                <!-- Contact -->
+                <h5>Contact</h5>
+                <div class="mb-3">
+                    <input type="email" class="form-control" name="email" placeholder="Email (for order updates)" required>
+                </div>
+                <div class="form-check mb-4">
+                    <input type="checkbox" class="form-check-input" id="updates">
+                    <label class="form-check-label" for="updates">
+                        Send me order updates, news and offers on Email and WhatsApp
+                    </label>
+                </div>
+
+                <!-- Delivery -->
+                <h5>Delivery</h5>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" name="country" placeholder="Country/Region" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="first_name" placeholder="First name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="last_name" placeholder="Last name" required>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" name="address" placeholder="Address" required>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" name="apartment" placeholder="Apartment, suite (Optional)">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="city" placeholder="City" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="state" placeholder="State" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="pincode" placeholder="Pincode" required>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" name="phone" placeholder="Phone" required>
+                    </div>
+                </div>
+                <div class="form-check mb-4">
+                    <input type="checkbox" class="form-check-input" id="saveInfo">
+                    <label class="form-check-label" for="saveInfo">Save this information for next time</label>
+                </div>
+
+                <!-- Payment -->
+                <h5>Choose your payment method</h5>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="radio" name="payment" id="online" value="online" checked>
+                    <label class="form-check-label" for="online">
+                        Secure transaction (UPI, Cards, Wallets, Net banking)
+                        <img src="{% static 'images/gpay.png' %}" alt="GPay" width="40" class="ms-2">
+                        <img src="{% static 'images/visa.webp' %}" alt="Visa" width="40">
+                        <img src="{% static 'images/mastercard.webp' %}" alt="Mastercard" width="40">
+                    </label>
+                </div>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="radio" name="payment" id="cod" value="cod">
+                    <label class="form-check-label" for="cod">Cash on Delivery</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">Order Now</button>
+            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="p-4" style="background-color: #87e987; border-radius: 10px;">
+                <h5 class="mb-3">Order summary</h5>
+                {% for item in cart_items %}
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" width="80" class="me-3">
+                    <div>
+                        <p class="mb-0 fw-bold">{{ item.product.name }}</p>
+                        <small>MRP: ₹{{ item.product.price }}</small><br>
+                        <small>Quantity {{ item.quantity }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Discount code or gift card">
+                    <button class="btn btn-primary">Apply</button>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <span>Sub total</span>
+                    <span>₹ {{ subtotal }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Shipping</span>
+                    <span>₹ {{ shipping }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total</span>
+                    <span>₹ {{ total }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

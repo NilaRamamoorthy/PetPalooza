@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    .custom-blue {
+        color: #1C49C2 !important;
+    }
+
+    .custom-blue-bg {
+        background-color: #1C49C2 !important;
+        color: white !important;
+    }
+
+    .custom-blue-hover:hover {
+        background-color: #163aa0 !important;
+        color: white !important;
+    }
+
+    .arrow-icon {
+        font-size: 1.5rem;
+        color: #1C49C2;
+    }
+
+    .info-card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 20px;
+        transition: 0.3s ease;
+        height: 100%;
+    }
+
+    .info-card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .contact-icon {
+        font-size: 1.2rem;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <div class="text-muted mb-3">
+        <a href="{% url 'home' %}" class="text-decoration-none text-dark">Home</a> / Contact
+    </div>
+
+    <!-- Page Title -->
+    <h3 class="fw-bold mb-4">Contact Us</h3>
+
+    <!-- Sign In Card -->
+    <div class="d-flex justify-content-between align-items-center p-4 mb-5" style="border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-person-circle fs-3"></i>
+            <div>
+                <div class="fw-semibold">Getting help is easy</div>
+                <small class="text-muted">Sign in to get help with recent orders</small>
+            </div>
+        </div>
+        <a href="{% url 'login' %}" class="btn custom-blue-bg custom-blue-hover">Sign in</a>
+    </div>
+
+    <!-- Quick Links -->
+    <h5 class="section-title">Quick Links</h5>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="info-card d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-bold">Track order</div>
+                    <small class="text-muted">View the status of your order</small>
+                </div>
+                <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="info-card d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-bold">Return order</div>
+                    <small class="text-muted">Return and view the items in your order</small>
+                </div>
+                <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="info-card d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-bold">Chat with vet</div>
+                    <small class="text-muted">View the status of your order</small>
+                </div>
+                <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Browse Topics -->
+    <h5 class="section-title">Browse Topics</h5>
+    <div class="row g-3 mb-5">
+        <div class="col-md-3">
+            <div class="info-card d-flex justify-content-between align-items-center">
+                <div>Order related</div>
+                <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="info-card d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Return & cancellations</span>
+                </div>
+                <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="info-card d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-credit-card"></i>
+                    <span>Payments & refund</span>
+                </div>
+                <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="info-card d-flex justify-content-between align-items-center">
+                <div>General enquiry</div>
+                <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Get in Touch -->
+    <h5 class="section-title">Get in touch</h5>
+    <p>If you have any inquiries, feel free to contact us</p>
+    <div class="mb-2">
+        <i class="bi bi-telephone contact-icon"></i>
+        <span>Call to {{ site_settings.phone_number }}</span>
+    </div>
+    <div>
+        <i class="bi bi-envelope contact-icon"></i>
+        <span>{{ site_settings.email }}</span>
+    </div>
+</div>
+{% endblock %}

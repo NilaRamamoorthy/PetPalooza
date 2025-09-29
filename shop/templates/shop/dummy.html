@@ -1,0 +1,77 @@
+<!-- Review Section -->
+<div class="card p-4 mt-5">
+  <div class="row">
+    
+    <!-- LEFT: Ratings Overview -->
+    <div class="col-md-6 border-end">
+      <h4 class="mb-3">Customer Reviews</h4>
+      
+      <!-- Average Rating -->
+      <div class="d-flex align-items-center mb-2">
+        {% for i in "12345" %}
+          {% if forloop.counter <= avg_rating %}
+            <i class="bi bi-star-fill text-warning fs-4"></i>
+          {% else %}
+            <i class="bi bi-star text-warning fs-4"></i>
+          {% endif %}
+        {% endfor %}
+        <span class="ms-2">{{ avg_rating|floatformat:1 }} / 5</span>
+      </div>
+      <p class="text-muted">{{ review_count }} reviews</p>
+
+      <!-- Breakdown -->
+      {% for item in breakdown_list %}
+      <div class="d-flex align-items-center mb-2">
+        <span style="width:50px;">{{ item.stars }} ★</span>
+        <div class="progress flex-grow-1 mx-2" style="height: 8px; border-radius: 4px;">
+          <div class="progress-bar bg-warning" role="progressbar"
+               style="width: {{ item.percent }}%;" aria-valuenow="{{ item.percent }}"
+               aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <span>{{ item.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- RIGHT: Review Form -->
+    <div class="col-md-6 ps-4">
+      <h5 class="mb-3">Be the first to review “{{ product.name }}”</h5>
+      <p class="small text-muted">Your email address will not be published. Required fields are marked *</p>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- Rating Input -->
+        <label class="form-label">Your Rating *</label><br>
+        <div class="star-rating mb-3">
+          {% for i in "54321" %}
+            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
+            <label for="star{{ i }}">★</label>
+          {% endfor %}
+        </div>
+
+        <!-- Review Text -->
+        <div class="mb-3">
+          <label class="form-label">Your Review *</label>
+          {{ form.review }}
+        </div>
+
+        <!-- Name -->
+        <div class="mb-3">
+          <label class="form-label">Your Name *</label>
+          {{ form.name }}
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label class="form-label">Your Email *</label>
+          {{ form.email }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+   <!-- ✅ Breadcrumb -->
+    <div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none text-dark" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none text-dark" href="{% url 'cart:cart_detail' %}">Cart</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none text-dark" href="{% url 'cart:checkout' %}">Checkout</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Order Complete
+            </li>
+        </ol>
+    </nav>
+    </div>
+<div class="container my-5 d-flex justify-content-center">
+    <div class="p-5 text-center" style="background-color: #90ee90; border-radius: 20px; max-width: 600px;">
+        <h2 class="fw-bold mb-3">Thank you for your purchase!</h2>
+        <p>Your order will be processed within 24 hours during working days. 
+        We will notify you by email once your order has been shipped.</p>
+
+        <h5 class="mt-4 fw-bold">Billing address</h5>
+        <p><strong>Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+        <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}, {{ order.state }} {{ order.pincode }}</p>
+        <p><strong>Phone:</strong> {{ order.phone }}</p>
+        <p><strong>Email:</strong> {{ order.email }}</p>
+
+        <a href="{% url 'cart:cart_detail' %}" class="btn btn-primary fw-bold mt-3">Back</a>
+    </div>
+</div>
+
+{% endblock %}

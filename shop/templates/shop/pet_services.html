@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+ <style>
+  .hero-section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-img-container {
+  flex: 1;
+  z-index: -1;
+}
+
+.hero-img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1C49C2;
+  border-radius: 50%;
+  padding: 40px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+    .hero-overlay h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #fff;
+      font-weight: bold;
+    }
+    .paw-icon {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .services-box {
+      background: #fff;
+      border-radius: 15px;
+      padding: 30px;
+      margin-top: -60px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .service-item {
+      background: #90ee90;
+      border-radius: 8px;
+      padding: 30px 15px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .service-item:hover {
+      transform: translateY(-5px);
+    }
+    .service-item i {
+      font-size: 28px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .service-item p {
+      margin: 0;
+      font-weight: bold;
+    }
+  </style>
+<!-- Hero Section -->
+<div class="hero-section d-flex mt-4">
+  <!-- Left Image -->
+  <div class="hero-img-container">
+    <img src="{% static 'images/Dog1.png' %}" alt="Dog 1" class="hero-img">
+  </div>
+  <!-- Right Image -->
+  <div class="hero-img-container">
+    <img src="{% static 'images/Dog2.png' %}" alt="Dog 2" class="hero-img">
+  </div>
+
+  <!-- Center Overlay Logo -->
+  <div class="hero-overlay">
+    <img src="{{ site_settings.logo.url }}" alt="Logo" style="height: 120px; width: 120px; border-radius: 50%;">
+  </div>
+</div>
+
+  <!-- Services Section -->
+  <div class="container services-box">
+    <div class="row text-center g-4">
+      <div class="col-6 col-md-2">
+        <div class="service-item">
+          <i class="bi-scissors"></i>
+          <p>Grooming</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="service-item">
+          <i class="bi-house-door"></i>
+          <p>PetsHotel</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="service-item">
+          <i class="bi-bone"></i>
+          <p>Doggie Day Camp</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="service-item">
+          <i class="bi-mortarboard"></i>
+          <p>Training</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="service-item">
+          <i class="bi-heart-pulse"></i>
+          <p>Veterinary Care</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="service-item">
+          <i class="bi-heart"></i>
+          <p>Adoption</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--  -->
+  <div class="container my-5">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div class="col-9">
+      <h2>Pet Services</h2>
+      <p>
+        Whether it's a pamper day, playdate, sleepover, training class or veterinary visit,
+        we provide the best in pet services with highly trained, passionate associates.
+        From our pet hotel & doggie day camp as an alternative to pet sitting, to our dog
+        training and grooming as an alternative to DIY, our services are conveniently
+        located inside most of our PetPalooza stores.
+      </p>
+    </div>
+    <div class="text-end">
+      <a href="tel:+911234567890" class="text-decoration-none fw-bold text-primary">
+        customer service <br> {{ site_settings.phone_number }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Specials Row -->
+  <div class="row g-4 mb-4">
+    <!-- Left Blue Banner -->
+    <div class="col-md-8">
+      <div class="d-flex bg-primary text-white h-100  align-items-center">
+        <div class="flex-grow-1 px-5">
+          <h5 class="fw-bold">Summer Special</h5>
+          <p>
+            Upgrade a salon visit or overnight stay<br>
+            with a strawberry ice cream spritz, $350+<br>
+            in coupon savings & more
+          </p>
+          <button class="btn btn-light fw-bold">Book Now</button>
+        </div>
+        <div>
+          <img src="{% static 'images/Dog3.png' %}" alt="Promo" style="height: 240px; border-radius: 8px;">
+        </div>
+      </div>
+    </div>
+    <!-- Right Green Box -->
+    <div class="col-md-4">
+      <div class="bg-success text-white h-100 p-4 d-flex flex-column justify-content-between">
+        <div>
+          <h5 class="fw-bold">Monthly specials</h5>
+          <p>
+            Check out deals, offers & events<br>
+            in grooming, boarding, day camp<br> & training
+          </p>
+        </div>
+        <button class="btn btn-primary fw-bold">Get Details</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Promo Cards -->
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="border p-4 text-center h-100">
+        <p>
+          Yappy Hour<br>
+          $5 OFF on salon walk-in<br>
+          services<br>
+          Monday Thru Friday
+        </p>
+        <button class="btn btn-primary">Learn more</button>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="border p-4 text-center h-100">
+        <p>
+          ONLY $129 any 6-wk. Training<br>
+          Class<br>
+          (that's $21.50 a class) valid<br>
+          thru 7/6^
+        </p>
+        <button class="btn btn-primary">Enroll Now</button>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="border p-4 text-center h-100">
+        <p>
+          Traveling without your pet<br>
+          this summer?<br>
+          Suite upgrades and fun add-ons<br>
+          make their stay even more special.
+        </p>
+        <button class="btn btn-primary">Book Stay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

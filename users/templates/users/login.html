@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container my-5">
+    <h2 class="mb-4">Account</h2>
+
+    {% if user.is_authenticated %}
+        <div class="alert alert-success">
+            You are already logged in as <strong>{{ user.username }}</strong>.
+        </div>
+        <a href="{% url 'logout' %}" class="btn btn-danger mb-4">Logout</a>
+    {% endif %}
+
+    <div class="row border rounded p-4 shadow-sm" style="background: #fff;">
+        <!-- Returning customer -->
+        <div class="col-md-6 border-end">
+            <div class="text-white text-center py-2 mb-3 rounded" style="background-color: #86e986;">
+                <h5 class="mb-0">Returning customer</h5>
+            </div>
+
+            {% if not user.is_authenticated %}
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="username" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-50 ms-5">Log in</button>
+                    <div class="mt-2 text-end">
+                        <a href="#" class="text-decoration-none">Forgot your password?</a>
+                    </div>
+                </form>
+            {% else %}
+                <p class="text-muted">You are already logged in, no need to log in again.</p>
+            {% endif %}
+        </div>
+
+        <!-- New customer -->
+        <div class="col-md-6">
+            <div class=" text-white text-center py-2 mb-3 rounded" style="background-color: #86e986;">
+                <h5 class="mb-0">New customer</h5>
+            </div>
+
+            <p>Register with us for a faster checkout, to track the status of your order and more.</p>
+            <button type="button" class="btn btn-primary w-50 ms-5" data-bs-toggle="modal" data-bs-target="#registerModal">
+                Create an account
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Sign up for a free account at Petpalooza</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'register' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">First Name</label>
+            <input type="text" name="first_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="last_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirm_password" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-success w-100">Create an account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

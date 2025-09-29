@@ -1,0 +1,75 @@
+<footer class="text-white pt-5 pb-4"  style="background-color: #1C49C2;">
+    <div class="container">
+        <div class="row">
+
+            <!-- 1. PetPalooza + Links -->
+            <div class="col-md-2 mb-4">
+                <a href="{% url 'home' %}" class="d-flex align-items-center mb-3 text-white text-decoration-none">
+                    {% if site_settings.logo %}
+                        <img src="{{ site_settings.logo.url }}" alt="Logo" style="height: 50px; width: auto;">
+                    {% else %}
+                        <h4 class="fw-bold">PetPalooza</h4>
+                    {% endif %}
+                </a>
+                <ul class="list-unstyled small">
+                    <li><a href="{% url 'about' %}" class="text-white text-decoration-none">About Us</a></li>
+                    <li><a href="{% url 'contact' %}" class="text-white text-decoration-none">Contact Us</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Shop</a></li>
+
+                    <li><a href="#" class="text-white text-decoration-none">Blog</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- 2. Categories -->
+            <div class="col-md-2 mb-4">
+                <h5 class="fw-bold">Categories</h5>
+                <ul class="list-unstyled small">
+                    <li>Dog</li>
+                    <li>Cat</li>
+                    <li>Fish</li>
+                    <li>Rats</li>
+                    <li>Rabbits</li>
+                    <li>Hamsters</li>
+                    <li>Guinea pigs</li>
+                </ul>
+            </div>
+
+            <!-- 3. Support -->
+            <div class="col-md-2 mb-4">
+                <h5 class="fw-bold">Support</h5>
+                <ul class="list-unstyled small">
+                    <li>Privacy policy</li>
+                    <li>Refund & returns policy</li>
+                    <li>Shipping policy</li>
+                    <li>Terms & conditions</li>
+                </ul>
+            </div>
+
+            <!-- 4. Follow + Get in Touch -->
+            <div class="col-md-3 mb-4">
+                <h5 class="fw-bold">Follow</h5>
+                <div class="mb-3">
+                    <a href="#" class="text-primary me-2 fs-4"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-danger me-2 fs-4"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-danger me-2 fs-4"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="text-success fs-4"><i class="bi bi-whatsapp"></i></a>
+                </div>
+                <h5 class="fw-bold">Get in Touch</h5>
+                <p class="mb-1">Call: {{ site_settings.phone_number }}</p>
+                <p>Email: {{ site_settings.email }}</p>
+            </div>
+
+            <!-- 5. Subscribe -->
+            <div class="col-md-3 mb-4">
+                <h5 class="fw-bold">For Subscribe,</h5>
+                <form method="post" action="#">
+                    {% csrf_token %}
+                    <input type="email" name="email" placeholder="Email" class="form-control mb-3" required>
+                    <button type="submit" class="btn btn-light w-100">Subscribe Now</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</footer>

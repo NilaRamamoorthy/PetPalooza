@@ -5,9 +5,25 @@ from .models import About,HighlightCard, ReasonToLove, VetConsultationReason, Pe
 
 
 
+# def home(request):
+#     pets = PetType.objects.all()
+#     return render(request, 'home/home.html', {'pets': pets})
+
+from shop.models import Product, MainType
+
 def home(request):
-    pets = PetType.objects.all()
-    return render(request, 'home/home.html', {'pets': pets})
+    pets = PetType.objects.all()  
+
+    dog_healthcare_products = Product.objects.filter(
+        main_type__slug="dog",
+        category__slug="health-care",
+        is_available=True
+    )[:10]
+    context = {
+        "pets": pets,
+        "dog_healthcare_products": dog_healthcare_products,
+    }
+    return render(request, "home/home.html", context)
 
 
 def about_view(request):
@@ -83,3 +99,19 @@ def search(request):
     query = request.GET.get('q', '')
     # Placeholder: In real use, you'd filter products based on `query`
     return render(request, 'home/search_results.html', {'query': query})
+
+
+
+# from django.shortcuts import render
+# from shop.models import Product, SubCategory
+
+# def calming_products(request):
+#     # Get products under "Dog → Health Care"
+#     dog_health_products = Product.objects.filter(
+#         main_type__slug="dog",
+#         subtype__slug="health-care"
+#     )[:6]  # limit to 5 for carousel
+
+#     return render(request, "home/home.html", {
+#         "dog_health_products": dog_health_products,
+#     })

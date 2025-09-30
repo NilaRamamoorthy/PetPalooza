@@ -295,6 +295,71 @@
   </div>
 </div>
 
+<!-- Product cards -->
+
+<div class="container my-5">
+  <div class="row align-items-center">
+    
+    <!-- Left Side -->
+    <div class="col-md-4 text-center">
+      <img src="{% static 'images/promotion.png' %}" class="img-fluid rounded" alt="Stress Free Summer">
+      <h4 class="mt-3"><b>Stress-Free Summer</b></h4>
+      <p>Keep your pup calm all season</p>
+    </div>
+
+    <!-- Right Side Carousel -->
+    <div class="col-md-8">
+      <h3 class="text-center mb-4">Top Rated Calming Products</h3>
+      
+      <div id="dogProductsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
+          {% for product in dog_healthcare_products %}
+            {% if forloop.counter0|divisibleby:4 %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="row">
+            {% endif %}
+
+            <div class="col-md-3">
+              <div class="card h-100 text-center p-2">
+                <img src="{{ product.main_image.url }}" 
+                     class="card-img-top mx-auto" 
+                     style="max-height:150px; object-fit:contain;" 
+                     alt="{{ product.name }}">
+                <div class="card-body">
+                  <h6 class="card-title">{{ product.name|truncatechars:30 }}</h6>
+                  <p class="mb-2">₹ {{ product.price }}</p>
+                  <div class="text-warning mb-2">★★★★☆</div>
+                  <a href="{% url 'shop:product_detail' product.slug %}" 
+                     class="btn btn-primary btn-sm">View</a>
+                </div>
+              </div>
+            </div>
+
+            {% if forloop.counter|divisibleby:4 or forloop.last %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+        </div>
+
+        <!-- Carousel controls -->
+        <button class="carousel-control-prev" style="margin-left: -38px;" type="button" data-bs-target="#dogProductsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon bg-primary rounded-circle"></span>
+        </button>
+        <button class="carousel-control-next" style="margin-left: 48px;" type="button" data-bs-target="#dogProductsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon bg-primary rounded-circle"></span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+
 
 <!--  Promotions-->
 <section class="promotions py-5">

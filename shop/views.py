@@ -5,7 +5,9 @@ from home.models import SiteSettings
 from django.db.models import Avg, Count
 from django.db import models
 from .forms import ReviewForm
-
+from .models import MainType, Product
+from django.shortcuts import render, get_object_or_404
+from .models import MainType, Product, Category, SubCategory
 
 
 from django.contrib import messages  # make sure this is imported
@@ -51,14 +53,7 @@ def product_detail(request, slug):
     return render(request, "shop/product_detail.html", context)
 
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Avg, Count
-from django.core.paginator import Paginator
-from .models import MainType, Category, SubCategory, Product, Brand, Breed, TopDeal, Review
 
-
-from django.shortcuts import render, get_object_or_404
-from .models import MainType, Product, Category, SubCategory
 
 def main_type_products(request, main_type_slug):
     # Fetch the main type (dog, cat, etc.)
@@ -73,6 +68,9 @@ def main_type_products(request, main_type_slug):
     product_sizes = Product.SIZE_CHOICES
     product_life_stages = Product.LIFE_STAGE_CHOICES
 
+    # paginator = Paginator(products, 9)  # Show 12 products per page
+    # page_number = request.GET.get("page")
+    # page_obj = paginator.get_page(page_number)
 
     # Optional category/subcategory filtering
     category_slug = request.GET.get("category")
@@ -101,17 +99,25 @@ def main_type_products(request, main_type_slug):
         products = products.order_by("-created_at")
     # ✅ Load top deals for this main_type
     top_deals = TopDeal.objects.filter(main_type=main_type)
+
+  # ✅ Apply pagination after all filtering/sorting
+    paginator = Paginator(products, 9)  # Show 9 products per page
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     context = {
         "main_type": main_type,
         "selected_main_type": main_type, 
         "category": category,
         "subcategory": subcategory,
         "products": products,
+        'page_obj': page_obj,
         "top_deals": top_deals,
         "brands": brands,
         "breeds": breeds,
         "product_sizes": product_sizes,
         "product_life_stages": product_life_stages,
+        
     }
     return render(request, "shop/main_type_products.html", context)
 
